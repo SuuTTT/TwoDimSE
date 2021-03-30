@@ -28,7 +28,7 @@ public class TwoDimSE {
     // private TreeMap<PairNode, Double> commDeltaHTreeMap;
     private HashMap<PairNode, Double> commDeltaHMap;
     private TreeSet<CommDeltaH> commDeltaHSet;
-
+    //todo 维护每一个社区对应的最大△H，减小commDeltaHSet的负担，commDeltaH只需存储每一个社区对应最大的△H即可
 
     /**
      * 初始化二维结构熵所需的编码树信息
