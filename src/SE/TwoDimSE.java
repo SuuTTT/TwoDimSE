@@ -183,7 +183,7 @@ public class TwoDimSE {
 
     /**
      * 初始化编码树
-     * 即一维的编码树，每个叶子结点只包含一个点
+     * 根节点下有n个社区，每个社区只包含一个自身节点
      */
     private void initEncodingTree() {
         //计算社区节点之间的deltaH
@@ -244,6 +244,7 @@ public class TwoDimSE {
 
     /**
      * 计算两个节点之间的△H
+     * 论文《Structural information and dynamical complexity of networks》37页
      *
      * @param vi
      * @param vj
