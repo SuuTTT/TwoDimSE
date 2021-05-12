@@ -59,7 +59,7 @@ public class TwoDimSE {
     /**
      * 二维结构熵极小化
      */
-    public void min2dSE() {
+    public void min2dSE(String saveFilePath, Boolean doPrintNDI) throws IOException {
         initEncodingTree();
         twoDimSE = oneDimSE;
         CommDeltaH maxCommDeltaH = commDeltaHSet.last();
@@ -72,8 +72,12 @@ public class TwoDimSE {
             updateCommunities(maxCommDeltaH);
             maxCommDeltaH = commDeltaHSet.last();
         }
+
+        //完成划分后的其他操作
+        saveResult(saveFilePath);
         //输出解码信息
-        ndiInfo();
+        if (doPrintNDI)
+            ndiInfo();
     }
 
 

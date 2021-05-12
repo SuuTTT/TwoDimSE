@@ -45,7 +45,9 @@ public class PairNode {
 
     @Override
     public int hashCode() {
-        return Math.max(p1, p2);
+        int small = Math.min(p1,p2);
+        int large = Math.max(p1,p2);
+        return large*2+small;
     }
 
     @Override
