@@ -13,7 +13,7 @@ public class main {
         String path = "/Users/gem/PyProject/SE_image_seg/image_graph";
         Graph g = IO.getUndirGraphFromFile(path);
         TwoDimSE twoDimSE = new TwoDimSE(g);
-        twoDimSE.min2dSE("2D");
+        twoDimSE.min2dSE("2D", true);
         long endTime = System.currentTimeMillis();
         System.out.println(String.format("time cost is %dms",endTime - startTime));
     }
