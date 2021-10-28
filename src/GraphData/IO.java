@@ -9,11 +9,12 @@ import java.util.*;
 public class IO {
     /**
      * 从指定指定获取无向图
-     *  注意文件的格式：
-     *  第一行为节点的总数
-     *  从第二行起，每一行为一个边：
-     *  例如：1 2 3.44445
-     *  中间用空格隔开
+     * 注意文件的格式：
+     * 第一行为节点的总数
+     * 从第二行起，每一行为一个边：
+     * 例如：1 2 3.44445
+     * 中间用空格隔开
+     *
      * @param filePath
      * @throws Exception
      */
@@ -40,15 +41,11 @@ public class IO {
             //将边信息保存到图中
             //**从算法高效的角度考虑，在生成无向图文件的时候应保证不会出现以下异常情况
             //**在保证无向图文件数据无异常的情况下，即可注释掉异常情况的判断
-            if (!pair.isValid()) {
-                System.out.println("edge is illegal, a node cannot connected with itself");
-                continue;
-            } else if (weight == 0) {
-                System.out.println("edge break");
+            if (!valid(pair, weight)) {
                 continue;
             }
 
-            //是否添加过此边
+            //未添加此边则添加
             if (!weights.containsKey(pair)) {
                 //边及其对应的权重
                 weights.put(pair, weight);
@@ -70,8 +67,22 @@ public class IO {
         return g;
     }
 
+    private static boolean valid(PairNode pair, double weight) {
+        if (!pair.isValid()) {
+            System.out.println("edge is illegal, a node cannot connected with itself");
+            return false;
+        } else if (weight == 0) {
+            System.out.println("edge break");
+            return false;
+        }
+
+        return true;
+    }
+
+
     /**
      * 两点相连
+     *
      * @param connection
      * @param start
      * @param end

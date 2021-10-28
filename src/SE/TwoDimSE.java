@@ -26,7 +26,7 @@ public class TwoDimSE {
     // 节点之间的△H。使用了额外的存储，待优化（TreeMap）。
     // TreeSet可以为类按照一定规则排序，排序效率为O(logn)
     // private TreeMap<PairNode, Double> commDeltaHTreeMap;
-    private HashMap<PairNode, Double> commDeltaHMap;
+    private HashMap<PairNode, CommDeltaH> commDeltaHMap;
     private TreeSet<CommDeltaH> commDeltaHSet;
     //todo 维护每一个社区对应的最大△H，减小commDeltaHSet的负担，commDeltaH只需存储每一个社区对应最大的△H即可
 
@@ -142,7 +142,8 @@ public class TwoDimSE {
                 PairNode pairRightAndK = new PairNode(commRight, k);
                 cutIk = cuts.get(pairLeftAndK) + cuts.get(pairRightAndK);
                 connRight.remove(k);
-                commDeltaHSet.remove(new CommDeltaH(pairRightAndK, commDeltaHMap.get(pairRightAndK)));
+//                commDeltaHSet.remove(new CommDeltaH(pairRightAndK, commDeltaHMap.get(pairRightAndK)));
+                commDeltaHSet.remove(commDeltaHMap.get(pairRightAndK));
                 commDeltaHMap.remove(pairRightAndK);
                 cuts.remove(pairRightAndK);
                 connections.get(k).remove(commRight);
@@ -153,12 +154,13 @@ public class TwoDimSE {
             Vk = volumes[k];
             Gx = Gi + Gk - 2 * cutIk;
             newDelta = computeDeltaH(Vi, Vk, Gi, Gk, Gx, sumDegrees);
-            //更新与cuts和△H相关的存储
 
+            //更新与cuts和△H相关的存储
             cuts.put(pairLeftAndK, cutIk);
-            commDeltaHSet.remove(new CommDeltaH(pairLeftAndK, commDeltaHMap.get(pairLeftAndK)));
-            commDeltaHSet.add(new CommDeltaH(pairLeftAndK, newDelta));
-            commDeltaHMap.put(pairLeftAndK, newDelta);
+            commDeltaHSet.remove(commDeltaHMap.get(pairLeftAndK));
+            CommDeltaH newDeltaH = new CommDeltaH(pairLeftAndK, newDelta);
+            commDeltaHSet.add(newDeltaH);
+            commDeltaHMap.put(pairLeftAndK, newDeltaH);
             //此处connection不用更新
 
         }
@@ -171,12 +173,14 @@ public class TwoDimSE {
             Gx = Gi + Gk - 2 * cutJk;
             newDelta = computeDeltaH(Vi, Vk, Gi, Gk, Gx, sumDegrees);
             //更新与cuts和△H相关的存储
-            cuts.put(new PairNode(commLeft, k), cutJk);
+            PairNode pairLeftAndK = new PairNode(commLeft, k);
+            cuts.put(pairLeftAndK, cutJk);
             cuts.remove(pairRightAndK);
-            commDeltaHSet.remove(new CommDeltaH(pairRightAndK, commDeltaHMap.get(pairRightAndK)));
-            commDeltaHSet.add(new CommDeltaH(new PairNode(commLeft, k), newDelta));
+            CommDeltaH commDeltaH = new CommDeltaH(pairLeftAndK, newDelta);
+            commDeltaHSet.remove(commDeltaHMap.get(pairRightAndK));
+            commDeltaHSet.add(commDeltaH);
             commDeltaHMap.remove(pairRightAndK);
-            commDeltaHMap.put(new PairNode(commLeft, k), newDelta);
+            commDeltaHMap.put(pairLeftAndK, commDeltaH);
             connections.get(commLeft).add(k);
             connections.get(k).add(commLeft);
             connections.get(k).remove(commRight);
@@ -198,8 +202,9 @@ public class TwoDimSE {
             double gj = vj;
             double gx = vi + vj - 2 * cuts.get(p);
             double deltaH = computeDeltaH(vi, vj, gi, gj, gx, sumDegrees);
-            commDeltaHMap.put(p, deltaH);
-            commDeltaHSet.add(new CommDeltaH(p, deltaH));
+            CommDeltaH commDeltaH = new CommDeltaH(p, deltaH);
+            commDeltaHMap.put(p, commDeltaH);
+            commDeltaHSet.add(commDeltaH);
         }
 
         //计算一维结构熵，并初始化社区
