@@ -45,9 +45,9 @@ public class PairNode {
 
     @Override
     public int hashCode() {
-        int small = Math.min(p1,p2);
-        int large = Math.max(p1,p2);
-        return large*2+small;
+        int small = Math.min(p1, p2);
+        int large = Math.max(p1, p2);
+        return large * 2 + small;
     }
 
     @Override
@@ -74,7 +74,7 @@ public class PairNode {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return String.format("%d -> %d", p1, p2);
     }
 }

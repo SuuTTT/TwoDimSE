@@ -53,6 +53,16 @@ public class CommDeltaH implements Comparable {
     @Override
     public int compareTo(Object o) {
         CommDeltaH c = (CommDeltaH) o;
-        return Double.compare(this.deltaH, c.deltaH);
+        int cp = Double.compare(this.deltaH, c.deltaH);
+        if (cp != 0) {
+            return cp;
+        } else {
+            return Integer.compare(this.pairComms.getP1(), c.pairComms.getP1());
+        }
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%d->%d: %f", pairComms.getP1(), pairComms.getP2(), deltaH);
     }
 }
