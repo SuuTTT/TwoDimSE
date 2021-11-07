@@ -1,10 +1,11 @@
 package GraphData;
 
+import java.io.*;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Set;
 
-public class Graph {
+public class Graph implements Serializable {
+    private static final long serialVersionUID = -4217430621824112183L;
     private int numNodes;
     private double sumDegrees;
 
@@ -60,6 +61,38 @@ public class Graph {
 
     public void setConnection(HashMap<Integer, Set<Integer>> connection) {
         this.connection = connection;
+    }
+
+    public void write2File(String fileName) {
+        try {
+            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fileName));
+            oos.writeObject(this);
+            oos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public static void write2File(Graph graph, String fileName) {
+        try {
+            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fileName));
+            oos.writeObject(graph);
+            oos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static Graph readFromFile(String fileName) {
+        Graph g = null;
+        try {
+            ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fileName));
+            g = (Graph) ois.readObject();
+            ois.close();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return g;
     }
 }
 

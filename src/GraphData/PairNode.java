@@ -1,10 +1,13 @@
 package GraphData;
 
 
+import java.io.Serializable;
+
 /**
  * 无向图无需严格区分起点和终点
  */
-public class PairNode {
+public class PairNode implements Serializable {
+    private static final long serialVersionUID = 7385160833386892234L;
     private int p1;
     private int p2;
 

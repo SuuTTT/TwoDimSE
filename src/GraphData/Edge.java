@@ -1,6 +1,6 @@
 package GraphData;
 
-public class Edge {
+public final class Edge implements Comparable<Edge>{
     private int start;
     private int end;
     private double weight;
@@ -40,6 +40,7 @@ public class Edge {
     public int hashCode() {
         return end;
     }
+
     @Override
     public boolean equals(Object o) {
         //自反性
@@ -65,9 +66,21 @@ public class Edge {
         }
 
         return true;
-
-
     }
 
 
+    @Override
+    public String toString() {
+        return String.format("%d -> %d : %f", start, end, weight);
+    }
+
+    @Override
+    public int compareTo(Edge edge) {
+        int cp = Double.compare(this.weight, edge.weight);
+        if (cp != 0) {
+            return cp;
+        } else {
+            return Integer.compare(this.start, edge.start);
+        }
+    }
 }

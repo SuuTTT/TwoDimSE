@@ -10,7 +10,8 @@ import java.math.BigDecimal;
 import java.util.*;
 
 /**
- *  感觉负优化。。。。。。。。
+ *  适合于大规模稠密的图
+ *  维护每一个社区对应的最大△H，减小commDeltaHSet的负担，commDeltaH只需存储每一个社区对应最大的△H即可
  */
 public class NewTwoDimSE {
     private double sumDegrees;
@@ -61,7 +62,7 @@ public class NewTwoDimSE {
     /**
      * 二维结构熵极小化
      */
-    public void min2dSE(String saveFilePath, Boolean doPrintNDI) throws IOException {
+    private void min2dSE(String saveFilePath, boolean doPrintNDI, boolean doSave) throws IOException {
         initEncodingTree();
         twoDimSE = oneDimSE;
         CommDeltaH maxCommDeltaH = maxEachRowDeltaHSet.last();
@@ -76,10 +77,21 @@ public class NewTwoDimSE {
         }
 
         //完成划分后的其他操作
-        saveResult(saveFilePath);
+        if (doSave) {
+            saveResult(saveFilePath);
+        }
+
         //输出解码信息
         if (doPrintNDI)
             ndiInfo();
+    }
+
+    public void min2dSE(boolean doPrintNDI) throws IOException {
+        min2dSE(" ", doPrintNDI, false);
+    }
+
+    public void min2dSE(String saveFilePath, boolean doPrintNDI) throws IOException {
+        min2dSE(saveFilePath, doPrintNDI, true);
     }
 
 

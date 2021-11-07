@@ -3,32 +3,29 @@ package SE;
 import GraphData.Graph;
 import GraphData.PairNode;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.math.BigDecimal;
 import java.util.*;
 
 public class TwoDimSE {
-    private double sumDegrees;
+    private final double sumDegrees;
     private double oneDimSE;
     private double twoDimSE;
     //社区及其包含的节点
-    private HashMap<Integer, Set<Integer>> communities;
+    private final HashMap<Integer, Set<Integer>> communities;
     //节点的度和割边数
-    private double[] volumes;
-    private double[] gs;
+    private final double[] volumes;
+    private final double[] gs;
     //节点之间的割
-    private HashMap<PairNode, Double> cuts;
+    private final HashMap<PairNode, Double> cuts;
     //社区与其相联系的社区
     //connection是双向的，不同于pairNode，更新时应注意双向更新
-    private HashMap<Integer, Set<Integer>> connections;
+    private final HashMap<Integer, Set<Integer>> connections;
     // 节点之间的△H。使用了额外的存储，待优化（TreeMap）。
     // TreeSet可以为类按照一定规则排序，排序效率为O(logn)
     // private TreeMap<PairNode, Double> commDeltaHTreeMap;
-    private HashMap<PairNode, CommDeltaH> commDeltaHMap;
-    private TreeSet<CommDeltaH> commDeltaHSet;
-    //todo 维护每一个社区对应的最大△H，减小commDeltaHSet的负担，commDeltaH只需存储每一个社区对应最大的△H即可
+    private final HashMap<PairNode, CommDeltaH> commDeltaHMap;
+    private final TreeSet<CommDeltaH> commDeltaHSet;
 
     /**
      * 初始化二维结构熵所需的编码树信息
@@ -59,7 +56,7 @@ public class TwoDimSE {
     /**
      * 二维结构熵极小化
      */
-    public void min2dSE(String saveFilePath, Boolean doPrintNDI) throws IOException {
+    private void min2dSE(String saveFilePath, boolean doPrintNDI, boolean doSave) throws IOException {
         initEncodingTree();
         twoDimSE = oneDimSE;
         CommDeltaH maxCommDeltaH = commDeltaHSet.last();
@@ -74,10 +71,20 @@ public class TwoDimSE {
         }
 
         //完成划分后的其他操作
-        saveResult(saveFilePath);
+        if (doSave)
+            saveResult(saveFilePath);
+
         //输出解码信息
         if (doPrintNDI)
             ndiInfo();
+    }
+
+    public void min2dSE(boolean doPrintNDI) throws IOException {
+        min2dSE(" ",  doPrintNDI, false);
+    }
+
+    public void min2dSE(String saveFilePath, boolean doPrintNDI) throws IOException {
+        min2dSE(saveFilePath, doPrintNDI, true);
     }
 
 
@@ -186,6 +193,8 @@ public class TwoDimSE {
             connections.get(k).remove(commRight);
         }
 
+        connRight.clear();
+
 
     }
 
@@ -194,6 +203,7 @@ public class TwoDimSE {
      * 根节点下有n个社区，每个社区只包含一个自身节点
      */
     private void initEncodingTree() {
+        System.out.println("init encoding tree......");
         //计算社区节点之间的deltaH
         for (PairNode p : cuts.keySet()) {
             double vi = volumes[p.getP1()];
@@ -218,6 +228,8 @@ public class TwoDimSE {
                 oneDimSE -= (volumes[i] / sumDegrees) * (Math.log(volumes[i] / sumDegrees)) / Math.log(2);
             }
         }
+
+        System.out.println("eliminate uncertainty.....");
 
     }
 
@@ -249,6 +261,32 @@ public class TwoDimSE {
         }
 
         bw.close();
+    }
+
+    public HashMap<Integer, Set<Integer>> getCommunities() {
+        return communities;
+    }
+
+    public void savePartitionResult(String saveFileName) {
+        try {
+            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(saveFileName));
+            oos.writeObject(communities);
+            oos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public HashMap<Integer, Set<Integer>> readPartitionResult(String fileName) {
+        HashMap<Integer, Set<Integer>> res = new HashMap<>();
+        try {
+            ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fileName));
+            res = (HashMap<Integer, Set<Integer>>) ois.readObject();
+            ois.close();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return res;
     }
 
     /**

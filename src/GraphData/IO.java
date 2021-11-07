@@ -87,7 +87,7 @@ public class IO {
      * @param start
      * @param end
      */
-    private static void putConnection(HashMap<Integer, Set<Integer>> connection, int start, int end) {
+    public static void putConnection(HashMap<Integer, Set<Integer>> connection, int start, int end) {
         if (!connection.containsKey(start)) {
             connection.put(start, new TreeSet<>() {{
                 add(end);
