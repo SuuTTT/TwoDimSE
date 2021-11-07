@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/ISSI.iml" filepath="$PROJECT_DIR$/ISSI.iml" />
+      <module fileurl="file://$PROJECT_DIR$/TwoDimSE.iml" filepath="$PROJECT_DIR$/TwoDimSE.iml" />
     </modules>
   </component>
 </project>
