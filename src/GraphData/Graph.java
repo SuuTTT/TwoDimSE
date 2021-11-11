@@ -63,6 +63,11 @@ public class Graph implements Serializable {
         this.connection = connection;
     }
 
+    /**
+     * java原生的序列化和反序列化太耗时
+     * @param fileName
+     */
+    @Deprecated
     public void write2File(String fileName) {
         try {
             ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fileName));
@@ -72,6 +77,7 @@ public class Graph implements Serializable {
             e.printStackTrace();
         }
     }
+    @Deprecated
     public static void write2File(Graph graph, String fileName) {
         try {
             ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fileName));

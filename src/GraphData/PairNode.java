@@ -46,11 +46,17 @@ public class PairNode implements Serializable {
 
     }
 
+    /**
+     * 定义的哈希函数较为重要，减小哈希碰撞。
+     * 采用此哈希函数的原因是因为图像构建图时大部分节点都相邻。
+     * deIIMG-3D构建图时节点数量较小影响较小
+     * @return
+     */
     @Override
     public int hashCode() {
         int small = Math.min(p1, p2);
         int large = Math.max(p1, p2);
-        return large * 2 + small;
+        return large * 4 + small;
     }
 
     @Override

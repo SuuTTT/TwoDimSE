@@ -6,17 +6,37 @@ import GraphData.IO;
 import GraphData.PairNode;
 import org.opencv.core.Mat;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 
 public class SEAlgo {
     public static int k = 2;
     public static int t1 = 1;
-    public static int t2 = 20;
+    /**
+     * 论文中是20，此处为30是因为python计算的浮点数和java计算的浮点数精度有差异
+     * t2值对图像分割结果影响较大，如果有更好的选取标准或许会使图像分割结果更加完美
+     */
+    public static int t2 = 25;
+    /**
+     * 压缩信息率。要求构建的G**的压缩信息率要小于此值
+     */
     public static double cRatio = 0.2;
 
+    /**
+     * 构建G**时每个节点所对应的边的集合
+     * 这样在构建G**时就不必每次都计算一遍
+     */
     public static PriorityQueue[] edgePQs;
-
+    /**
+     * 边的比较器，使其从小到大排列
+     */
+    public static final Comparator<Edge> edgeDescComparator = new Comparator<Edge>() {
+        @Override
+        public int compare(Edge e1, Edge e2) {
+            return e2.compareTo(e1);
+        }
+    };
 
     /**
      * 把图像转化为图结构的数据
@@ -43,6 +63,7 @@ public class SEAlgo {
 
     /**
      * 图像构建为图结构的数据时，每个像素点的交互
+     * 一般我们以图像左上角为原点建立坐标系，水平为x，垂直为y
      *
      * @param graph
      * @param img
@@ -59,95 +80,91 @@ public class SEAlgo {
         int width = img.width();
         int fromNode = y * width + x;
 
-        PriorityQueue<Edge> edges = new PriorityQueue<>();
+        PriorityQueue<Edge> edges = new PriorityQueue<>(edgeDescComparator);
         for (int i = 1; i <= k; i++) {
             int toNode;
             double weight;
             // x + i, y
-            if (x < rightBDY - i) {
+            if (x + i < rightBDY) {
                 toNode = y * width + (x + i);
                 weight = metric(img, x, y, x + i, y);
                 edges.add(new Edge(fromNode, toNode, weight));
             }
 
             // x, y + i
-            if (y < bottomBDY - i) {
+            if (y + i < bottomBDY) {
                 toNode = (y + i) * width + x;
                 weight = metric(img, x, y, x, y + i);
                 edges.add(new Edge(fromNode, toNode, weight));
             }
 
             // x + i, y + i
-            if ((x < rightBDY - i) && (y < bottomBDY - i)) {
+            if ((x + i < rightBDY) && (y + i < bottomBDY)) {
                 toNode = (y + i) * width + (x + i);
                 weight = metric(img, x, y, x + i, y + i);
                 edges.add(new Edge(fromNode, toNode, weight));
             }
 
             // x + i, y - i
-            if ((x < rightBDY - i) && (y > i + topBDY - 1)) {
+            if ((x + i < rightBDY) && (y - i > topBDY - 1)) {
                 toNode = (y - i) * width + (x + i);
                 weight = metric(img, x, y, x + i, y - i);
                 edges.add(new Edge(fromNode, toNode, weight));
             }
 
             // x , y - i
-            if (y > i + topBDY - 1) {
+            if (y - i > topBDY - 1) {
                 toNode = (y - i) * width + x;
                 weight = metric(img, x, y, x, y - i);
                 edges.add(new Edge(fromNode, toNode, weight));
             }
 
             // x - i, y - i
-            if ((x > i + leftBDY - 1) && (y > i + topBDY - 1)) {
+            if ((x - i > leftBDY - 1) && (y - i > topBDY - 1)) {
                 toNode = (y - i) * width + (x - i);
                 weight = metric(img, x, y, x - i, y - i);
                 edges.add(new Edge(fromNode, toNode, weight));
             }
 
             // x - i, y
-            if (x > i + leftBDY - 1) {
+            if (x - i > leftBDY - 1) {
                 toNode = y * width + (x - i);
                 weight = metric(img, x, y, x - i, y);
                 edges.add(new Edge(fromNode, toNode, weight));
             }
 
             // x - i, y + i
-            if ((x > i + leftBDY - 1) && (y < bottomBDY - i)) {
+            if ((x - i > leftBDY - 1) && (y + i < bottomBDY)) {
                 toNode = (y + i) * width + (x - i);
                 weight = metric(img, x, y, x - i, y + i);
                 edges.add(new Edge(fromNode, toNode, weight));
             }
-        }
 
+        }
 
         selectNMostSimilar(graph, edges, edges.size() / 2);
     }
 
     /**
-     * 选取权重较大的边，数量为原来的一半
+     * 选取权重较大的边，数量为n
      *
-     * @param graph
-     * @param edges
+     * @param graph 信息系统G
+     * @param edges 某个节点在图中的边集合
+     * @param n     选取边的数量
      */
     private static void selectNMostSimilar(Graph graph, PriorityQueue<Edge> edges, int n) {
-        int size = edges.size();
-        int pivot = size - n;
-        for (int i = 0; i < pivot; i++) {
-            edges.poll();
-        }
-
         double sumDegrees = graph.getSumDegrees();
         HashMap<PairNode, Double> weights = graph.getWeights();
         HashMap<Integer, Set<Integer>> connection = graph.getConnection();
         double[] nodeDegree = graph.getNodeDegree();
 
-        while (!edges.isEmpty()) {
+        for (int i = 0; i < n && !edges.isEmpty(); i++) {
             Edge edge = edges.poll();
             //加一为了使其从1开始编码
             int start = edge.getStart() + 1;
             int end = edge.getEnd() + 1;
             double weight = edge.getWeight();
+
             PairNode pair = new PairNode(start, end);
             if (!weights.containsKey(pair)) {
                 //边及其对应的权重
@@ -164,6 +181,13 @@ public class SEAlgo {
         graph.setSumDegrees(sumDegrees);
     }
 
+    /**
+     * 构建G**
+     *
+     * @param communities2D G*的划分结果
+     * @param n             构建图时每个节点有其他节点建立联系的数量
+     * @return 返回G**
+     */
     public static Graph constructGraphBy2D(HashMap<Integer, Set<Integer>> communities2D, int n) {
         System.out.println("construct graph G**");
 
@@ -173,10 +197,11 @@ public class SEAlgo {
 
         for (int fromNode = 0; fromNode < size; fromNode++) {
             if (edgePQs[fromNode] != null) {
+                //经过首次计算后过无需再次计算，大大缩短运行时间。以空间换时间
                 selectNMostSimilar(graph, edgePQs[fromNode], n);
             }
 
-            PriorityQueue<Edge> edges = new PriorityQueue<>();
+            PriorityQueue<Edge> edges = new PriorityQueue<>(edgeDescComparator);
             for (int toNode = 0; toNode < size; toNode++) {
                 if (fromNode != toNode) {
                     double weight = metric(fromNode, toNode);

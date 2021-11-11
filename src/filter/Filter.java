@@ -3,7 +3,6 @@ package filter;
 import org.opencv.core.Mat;
 
 public class Filter {
-
     private double sigma;
     private final static double WIDTH = 4.0;
 
@@ -17,12 +16,12 @@ public class Filter {
      * @return
      */
     public Mat getSmoothImage(Mat img) {
-        double[] mask = makeFgauss(img);
+        double[] mask = makeFgauss();
         normalizeMask(mask);
 
         Mat temp = convolveEven(img, mask);
         img = convolveEven(temp, mask);
-        temp.release();
+//        temp.release();
 
         return img;
     }
@@ -34,7 +33,6 @@ public class Filter {
      * @return
      */
     private Mat convolveEven(Mat img, double[] mask) {
-        double max = 0.0;
         int height = img.height();
         int width = img.width();
 
@@ -46,6 +44,7 @@ public class Filter {
                 //像素点y,x的处理
                 double[] colorVector = img.get(y, x);
                 double[] sumVector = new double[img.channels()];
+
                 //遍历颜色通道
                 for (int i = 0; i < img.channels(); i++) {
                     sumVector[i] = colorVector[i] * mask[0];
@@ -53,10 +52,11 @@ public class Filter {
                     for (int j = 1; j < lenMask; j++) {
                         sumVector[i] += mask[j] * (img.get(y, Math.max(x - j, 0))[i] +
                                 img.get(y, Math.min(x + j, width - 1))[i]);
-//                        max = Math.max(max, sumVector[i]);
+                        sumVector[i] = Math.floor(sumVector[i]);
                     }
                 }
                 //输出图像中y,x像素点的颜色向量
+
                 outputImg.put(y, x, sumVector);
             }
         }
@@ -83,10 +83,9 @@ public class Filter {
 
     /**
      * 高斯掩码
-     * @param img
      * @return
      */
-    private double[] makeFgauss(Mat img) {
+    private double[] makeFgauss() {
         int length = (int) (Math.ceil(sigma * WIDTH) + 1);
         double[] mask = new double[length];
         for (int i = 0; i < length; i++) {

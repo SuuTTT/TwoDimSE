@@ -11,6 +11,7 @@ public class TwoDimSE {
     private final double sumDegrees;
     private double oneDimSE;
     private double twoDimSE;
+    private double compressionRatio;
     //社区及其包含的节点
     private final HashMap<Integer, Set<Integer>> communities;
     //节点的度和割边数
@@ -49,7 +50,6 @@ public class TwoDimSE {
         this.connections = graph.getConnection();
         this.commDeltaHMap = new HashMap<>();
         this.commDeltaHSet = new TreeSet<>();
-
     }
 
 
@@ -76,11 +76,15 @@ public class TwoDimSE {
 
         //输出解码信息
         if (doPrintNDI)
-            ndiInfo();
+            seInfo();
     }
 
-    public void min2dSE(boolean doPrintNDI) throws IOException {
-        min2dSE(" ",  doPrintNDI, false);
+    public void min2dSE(boolean doPrintNDI) {
+        try {
+            min2dSE(" ",  doPrintNDI, false);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void min2dSE(String saveFilePath, boolean doPrintNDI) throws IOException {
@@ -194,8 +198,6 @@ public class TwoDimSE {
         }
 
         connRight.clear();
-
-
     }
 
     /**
@@ -230,17 +232,16 @@ public class TwoDimSE {
         }
 
         System.out.println("eliminate uncertainty.....");
-
     }
 
     /**
-     * 输出ndi的相关信息
+     * 输出se的相关信息
      */
-    private void ndiInfo() {
-        System.out.println(String.format("The One and Two dimension SE: %f, %f\nDecoding Information : %f",
-                oneDimSE, twoDimSE, oneDimSE - twoDimSE));
-        double ndi = (oneDimSE - twoDimSE) / oneDimSE;
-        System.out.println(String.format("The Normalized Decoding Information is %f", ndi));
+    private void seInfo() {
+        this.compressionRatio = (oneDimSE - twoDimSE) / oneDimSE;
+        System.out.printf("The One and Two dimension SE: %f, %f\nDecoding Information(Compression Information) : %f%n",
+                oneDimSE, twoDimSE, oneDimSE - twoDimSE);
+        System.out.printf("The Normalized Decoding Information(Compression Ratio) is %f%n", compressionRatio);
     }
 
     /**
@@ -265,6 +266,10 @@ public class TwoDimSE {
 
     public HashMap<Integer, Set<Integer>> getCommunities() {
         return communities;
+    }
+
+    public double getCompressionRatio(){
+        return compressionRatio;
     }
 
     public void savePartitionResult(String saveFileName) {
