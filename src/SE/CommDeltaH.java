@@ -45,18 +45,21 @@ public class CommDeltaH implements Comparable {
             return false;
         }
         CommDeltaH c = (CommDeltaH) o;
-        return this.pairComms.equals(c.pairComms)  && this.deltaH == c.deltaH;
+        return this.pairComms.equals(c.pairComms) && this.deltaH == c.deltaH;
     }
 
+    /**
+     * 社区之间的不确定性的比较函数，
+     * 注意：可能会影响所分割社区的结果，但不改变总体消除的不确定性的量
+     *
+     * @param o
+     * @return
+     */
     @Override
     public int compareTo(Object o) {
         CommDeltaH c = (CommDeltaH) o;
-        int cp = Double.compare(this.deltaH, c.deltaH);
-        if (cp != 0) {
-            return cp;
-        } else {
-            return Integer.compare(this.pairComms.getP1(), c.pairComms.getP1());
-        }
+        int cmp = Double.compare(this.deltaH, c.deltaH);
+        return cmp == 0 ? Integer.compare(this.pairComms.getP1(), c.pairComms.getP1()) : cmp;
     }
 
     @Override

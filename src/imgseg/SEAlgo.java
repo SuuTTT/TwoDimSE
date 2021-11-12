@@ -30,12 +30,9 @@ public class SEAlgo {
     /**
      * 边的比较器，使其从小到大排列
      */
-    public static final Comparator<Edge> edgeDescComparator = new Comparator<Edge>() {
-        @Override
-        public int compare(Edge e1, Edge e2) {
-            int weightComp = Double.compare(e2.getWeight(),e1.getWeight());
-            return weightComp == 0 ? Integer.compare(e1.getSeqID(), e2.getSeqID()) : weightComp;
-        }
+    public static final Comparator<Edge> edgeDescComparator = (e1, e2) -> {
+        int weightComp = Double.compare(e2.getWeight(),e1.getWeight());
+        return weightComp == 0 ? Integer.compare(e1.getSeqID(), e2.getSeqID()) : weightComp;
     };
 
     /**

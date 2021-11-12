@@ -39,8 +39,8 @@ public class IO {
             double weight = Double.parseDouble(edge[2]);
             PairNode pair = new PairNode(start, end);
             //将边信息保存到图中
-            //**从算法高效的角度考虑，在生成无向图文件的时候应保证不会出现以下异常情况
-            //**在保证无向图文件数据无异常的情况下，即可注释掉异常情况的判断
+            //从算法高效的角度考虑（后来发现其实影响也没太大-，-），在生成无向图文件的时候应保证不会出现以下异常情况
+            //在保证无向图文件数据无异常的情况下，即可注释掉异常情况的判断
             if (!valid(pair, weight)) {
                 continue;
             }
