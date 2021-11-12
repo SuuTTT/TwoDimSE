@@ -1,12 +1,11 @@
 package imgseg;
 
-import GraphData.Edge;
-import GraphData.Graph;
-import GraphData.IO;
-import GraphData.PairNode;
+import graphdata.Edge;
+import graphdata.Graph;
+import graphdata.IO;
+import graphdata.PairNode;
 import org.opencv.core.Mat;
 
-import java.math.BigDecimal;
 import java.util.*;
 
 

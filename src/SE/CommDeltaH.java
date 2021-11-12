@@ -1,8 +1,6 @@
 package SE;
 
-import GraphData.PairNode;
-
-import java.util.List;
+import graphdata.PairNode;
 
 public class CommDeltaH implements Comparable {
     private PairNode pairComms;

@@ -1,8 +1,5 @@
-import GraphData.Graph;
-import GraphData.IO;
-import SE.NewTwoDimSE;
+import graphdata.Graph;
 import SE.TwoDimSE;
-import SE.TwoDimSE2;
 import filter.Filter;
 import imgseg.ImgShow;
 import imgseg.SEAlgo;

@@ -1,4 +1,4 @@
-package GraphData;
+package graphdata;
 
 public final class Edge implements Comparable<Edge> {
     private int start;

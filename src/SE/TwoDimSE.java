@@ -1,7 +1,7 @@
 package SE;
 
-import GraphData.Graph;
-import GraphData.PairNode;
+import graphdata.Graph;
+import graphdata.PairNode;
 
 import java.io.*;
 import java.math.BigDecimal;

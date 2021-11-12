@@ -1,4 +1,4 @@
-package GraphData;
+package graphdata;
 
 import java.io.*;
 import java.util.HashMap;

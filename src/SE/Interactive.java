@@ -1,9 +1,8 @@
 package SE;
 
-import GraphData.Graph;
-import GraphData.PairNode;
+import graphdata.Graph;
+import graphdata.PairNode;
 
-import java.lang.reflect.Parameter;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.TreeSet;

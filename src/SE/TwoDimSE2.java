@@ -1,7 +1,7 @@
 package SE;
 
-import GraphData.Graph;
-import GraphData.PairNode;
+import graphdata.Graph;
+import graphdata.PairNode;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
