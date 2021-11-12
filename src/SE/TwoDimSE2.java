@@ -11,7 +11,7 @@ import java.util.*;
 
 /**
  * 与TwoDimSE2相同，
- * 加入interactive封装数据，便于理解
+ * 加入interactive封装数据，便于理解。
  */
 public class TwoDimSE2 {
     private double sumDegrees;
@@ -24,17 +24,7 @@ public class TwoDimSE2 {
     private double[] gs;
     //节点之间的交互
     private Interactive interactive;
-//    //节点之间的割
-//    private HashMap<PairNode, Double> cuts;
-//    //社区与其相联系的社区
-//    //connection是双向的，不同于pairNode，更新时应注意双向更新
-//    private HashMap<Integer, Set<Integer>> connections;
-//    // 节点之间的△H。使用了额外的存储，待优化（TreeMap）。
-//    // TreeSet可以为类按照一定规则排序，排序效率为O(logn)
-//    // private TreeMap<PairNode, Double> commDeltaHTreeMap;
-//    private HashMap<PairNode, CommDeltaH> commDeltaHMap;
-//    private TreeSet<CommDeltaH> commDeltaHSet;
-    //todo 维护每一个社区对应的最大△H，减小commDeltaHSet的负担，commDeltaH只需存储每一个社区对应最大的△H即可
+
 
     /**
      * 初始化二维结构熵所需的编码树信息
