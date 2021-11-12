@@ -17,7 +17,7 @@ public class SEAlgo {
      * 论文中是20，此处为30是因为python计算的浮点数和java计算的浮点数精度有差异
      * t2值对图像分割结果影响较大，如果有更好的选取标准或许会使图像分割结果更加完美
      */
-    public static int t2 = 25;
+    public static int t2 = 20;
     /**
      * 压缩信息率。要求构建的G**的压缩信息率要小于此值
      */
@@ -34,7 +34,8 @@ public class SEAlgo {
     public static final Comparator<Edge> edgeDescComparator = new Comparator<Edge>() {
         @Override
         public int compare(Edge e1, Edge e2) {
-            return e2.compareTo(e1);
+            int weightComp = Double.compare(e2.getWeight(),e1.getWeight());
+            return weightComp == 0 ? Integer.compare(e1.getSeqID(), e2.getSeqID()) : weightComp;
         }
     };
 
@@ -79,6 +80,7 @@ public class SEAlgo {
 
         int width = img.width();
         int fromNode = y * width + x;
+        int seqID = 0;
 
         PriorityQueue<Edge> edges = new PriorityQueue<>(edgeDescComparator);
         for (int i = 1; i <= k; i++) {
@@ -88,56 +90,56 @@ public class SEAlgo {
             if (x + i < rightBDY) {
                 toNode = y * width + (x + i);
                 weight = metric(img, x, y, x + i, y);
-                edges.add(new Edge(fromNode, toNode, weight));
+                edges.add(new Edge(fromNode, toNode, weight, seqID++));
             }
 
             // x, y + i
             if (y + i < bottomBDY) {
                 toNode = (y + i) * width + x;
                 weight = metric(img, x, y, x, y + i);
-                edges.add(new Edge(fromNode, toNode, weight));
+                edges.add(new Edge(fromNode, toNode, weight, seqID++));
             }
 
             // x + i, y + i
             if ((x + i < rightBDY) && (y + i < bottomBDY)) {
                 toNode = (y + i) * width + (x + i);
                 weight = metric(img, x, y, x + i, y + i);
-                edges.add(new Edge(fromNode, toNode, weight));
+                edges.add(new Edge(fromNode, toNode, weight, seqID++));
             }
 
             // x + i, y - i
             if ((x + i < rightBDY) && (y - i > topBDY - 1)) {
                 toNode = (y - i) * width + (x + i);
                 weight = metric(img, x, y, x + i, y - i);
-                edges.add(new Edge(fromNode, toNode, weight));
+                edges.add(new Edge(fromNode, toNode, weight, seqID++));
             }
 
             // x , y - i
             if (y - i > topBDY - 1) {
                 toNode = (y - i) * width + x;
                 weight = metric(img, x, y, x, y - i);
-                edges.add(new Edge(fromNode, toNode, weight));
+                edges.add(new Edge(fromNode, toNode, weight, seqID++));
             }
 
             // x - i, y - i
             if ((x - i > leftBDY - 1) && (y - i > topBDY - 1)) {
                 toNode = (y - i) * width + (x - i);
                 weight = metric(img, x, y, x - i, y - i);
-                edges.add(new Edge(fromNode, toNode, weight));
+                edges.add(new Edge(fromNode, toNode, weight, seqID++));
             }
 
             // x - i, y
             if (x - i > leftBDY - 1) {
                 toNode = y * width + (x - i);
                 weight = metric(img, x, y, x - i, y);
-                edges.add(new Edge(fromNode, toNode, weight));
+                edges.add(new Edge(fromNode, toNode, weight, seqID++));
             }
 
             // x - i, y + i
             if ((x - i > leftBDY - 1) && (y + i < bottomBDY)) {
                 toNode = (y + i) * width + (x - i);
                 weight = metric(img, x, y, x - i, y + i);
-                edges.add(new Edge(fromNode, toNode, weight));
+                edges.add(new Edge(fromNode, toNode, weight, seqID++));
             }
 
         }
@@ -225,7 +227,8 @@ public class SEAlgo {
                         + square(img.get(y1, x1)[2] - img.get(y2, x2)[2])
         );
 
-        return Math.pow(2, -dst / t1);
+
+        return StrictMath.pow(2, -dst / t1);
     }
 
     private static double metric(int node1, int node2) {

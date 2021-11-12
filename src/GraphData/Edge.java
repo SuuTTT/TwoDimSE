@@ -1,9 +1,26 @@
 package GraphData;
 
-public final class Edge implements Comparable<Edge>{
+public final class Edge implements Comparable<Edge> {
     private int start;
     private int end;
     private double weight;
+    /**
+     * 在某一个边序列中的顺序id
+     */
+    private int seqID;
+
+    public Edge(int start, int end, double weight) {
+        this.start = start;
+        this.end = end;
+        this.weight = weight;
+    }
+
+    public Edge(int start, int end, double weight, int seqID) {
+        this.start = start;
+        this.end = end;
+        this.weight = weight;
+        this.seqID = seqID;
+    }
 
     public int getStart() {
         return start;
@@ -29,12 +46,14 @@ public final class Edge implements Comparable<Edge>{
         this.weight = weight;
     }
 
-
-    public Edge(int start, int end, double weight) {
-        this.start = start;
-        this.end = end;
-        this.weight = weight;
+    public int getSeqID() {
+        return seqID;
     }
+
+    public void setSeqID(int seqID) {
+        this.seqID = seqID;
+    }
+
 
     @Override
     public int hashCode() {
@@ -76,11 +95,10 @@ public final class Edge implements Comparable<Edge>{
 
     @Override
     public int compareTo(Edge edge) {
-        int cp = Double.compare(this.weight, edge.weight);
-        if (cp != 0) {
-            return cp;
-        } else {
-            return Integer.compare(this.start, edge.start);
-        }
+        int cmp = Double.compare(this.weight, edge.weight);
+
+        return cmp == 0 ? Integer.compare(this.start, edge.start) : cmp;
     }
+
+
 }

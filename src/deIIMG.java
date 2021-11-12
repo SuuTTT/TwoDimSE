@@ -30,7 +30,7 @@ public class deIIMG {
     }
 
     public static String getImagePath() {
-        String imgPath = "C:\\Users\\Lenovo\\Desktop\\SE_image_seg\\data\\86000.jpg";
+        String imgPath = "C:\\Users\\Lenovo\\Desktop\\SE_image_seg\\data\\wencong.jpg";
         return imgPath;
     }
 
@@ -54,7 +54,7 @@ public class deIIMG {
         TwoDimSE se = new TwoDimSE(g);
         se.min2dSE(true);
         Mat res2D = ImgShow.deIIMG_2D(se.getCommunities(), img);
-        int n = 35;
+        int n = 30;
         Graph g2;
         TwoDimSE se2;
         HashMap<Integer, Set<Integer>> commResult3d;
